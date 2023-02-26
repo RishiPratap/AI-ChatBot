@@ -1,0 +1,11 @@
+{
+  "name": "chatbot-backend",
+  "version": "1.0.0",
+  "description": "The backend logic for the AI chatbot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Srihari S",
+  "license": "ISC"
+}
