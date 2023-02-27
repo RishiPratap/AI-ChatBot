@@ -5,3 +5,4 @@
 | Endpoint | Method | JSON |
 | --- | --- | --- |
 | `/ask` | POST | `{ prompt: UserPrompt }` |
+! `/play` | POST | `{ category: GameCategory }` |

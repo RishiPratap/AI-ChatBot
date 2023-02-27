@@ -44,4 +44,10 @@ app.post("/ask", async (req, res) => {
   res.send(response);
 });
 
+app.post("/play", async (req, res) => {
+  const category = req.body.category;
+  console.log(`Let's play akinator on ${category}!`);
+  res.send("Yet to work on this");
+});
+
 app.listen(port);
