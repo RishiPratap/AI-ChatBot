@@ -1,127 +1,85 @@
 import { auth } from "./firebase";
-import {GrSend,GrAttachment} from 'react-icons/gr';
+import { GrSend, GrAttachment } from 'react-icons/gr';
+import { useState } from 'react';
 
 import './App.css'
 
-function Profile(){
+function Profile() {
     // Signout function
     const logout = () => {
         auth.signOut();
     }
 
-   const userMsg = [
-         {
-                id:1,
-                msg:"Hello",
-                time:"12:00",
-                sender:"user"
-            },
-            {
-                id:2,
-                msg:"How are you?",
-                time:"12:00",
-                sender:"user"
-            },
-            {
-                id:3,
-                msg:"I am fine, How are you?",
-                time:"12:00",
-                sender:"user"
-            },
-            {
-                id:4,
-                msg:"I am fine, How are you?",
-                time:"12:00",
-                sender:"user"
-            },
-            {
-                id:5,
-                msg:"I am fine, How are you?",
-                time:"12:00",
-                sender:"user"
-            },
-   ]
+    const [message, setMessage] = useState("");
 
-    const botMsg = [
-        {
-            id:1,
-            msg:"Hello",
-            time:"12:00",
-            sender:"bot"
-        },
-        {
-            id:2,
-            msg:"I am fine, How are you?",
-            time:"12:00",
-            sender:"bot"
-        },
-        {
-            id:3,
-            msg:"I am fine, How are you?",
-            time:"12:00",
-            sender:"bot"
-        },
-        {
-            id:4,
-            msg:"I am fine, How are you?",
-            time:"12:00",
-            sender:"bot"
-        },
-        {
-            id:5,
-            msg:"I am fine, How are you?",
-            time:"12:00",
-            sender:"bot"
-        },
-    ]
+    const sendMessage = (e) => {
+        e.preventDefault();
+        setMessage("");
+        document.getElementById("chatbot-input").value = "";
+        document.getElementById("Message-Container").innerHTML += `
+        <div class="user-msg">
+        <p>${message}</p><img src=${auth.currentUser.photoURL} alt="profile" class="userimg"/></div>`;
+    }
 
-    return(
+    return (
         <div className="Profile">
-        <div className="Navbar">
-            <div className="NavLeft">
-            {auth.currentUser.photoURL == null ? (<img src="https://cdn-icons-png.flaticon.com/512/4944/4944377.png" alt="logo" style={{padding:"5px", borderRadius:"50%",outline:"solid black"}} height="40px" width="40px"/>):(<img src={auth.currentUser.photoURL} alt="profile" height="50px" width="50px" style={{marginRight:"5px",marginBottom:"10px",borderRadius:"50%",outline:"solid black"}}/>)}
-            <h3 className="username">{auth.currentUser.displayName}</h3>
+            <div className="Navbar">
+                <div className="NavLeft">
+                    {auth.currentUser.photoURL == null ? (<img src="https://cdn-icons-png.flaticon.com/512/4944/4944377.png" alt="logo" style={{ padding: "5px", borderRadius: "50%", outline: "solid black" }} height="40px" width="40px" />) : (<img src={auth.currentUser.photoURL} alt="profile" height="50px" width="50px" style={{ marginRight: "5px", marginBottom: "10px", borderRadius: "50%", outline: "solid black" }} />)}
+                    <h3 className="username">{auth.currentUser.displayName}</h3>
+                </div>
+                <div className="NavRight">
+                    <button className="logout-btn"
+                        onClick={logout}>
+                        Logout
+                    </button>
+                </div>
             </div>
-            <div className="NavRight">
-            <button className="logout-btn" 
-            onClick={logout}>
-                Logout
-            </button>
-            </div>
-        </div>
-        <hr></hr>
-        <div className="ChatBot">
-            <div className="ChatBot-Header">
-                <h3>ChatBot</h3>
+            <hr></hr>
+            <div className="ChatBot">
+                <div className="ChatBot-Header">
+                    <h3>ChatBot</h3>
                 </div>
                 <div className="chatbot-body">
-                <div className="Mesaage-Container">
-                <div className="chatbot-body-left">
-                {botMsg.map((msg,index) => (
-                    <div className="bot-msg" key={index}>
-                    <img src="https://cdn-icons-png.flaticon.com/512/4944/4944377.png" alt="logo" className="botimg"/>
-                    <p key={index}>{msg.msg}</p>
+                    <div className="Message-Container" id="Message-Container">
+                        <div className="user-msg">
+                            <p>Hii</p>
+                            <img src={auth.currentUser.photoURL} alt="profile" className="userimg" />
+                        </div>
+                        <div className="bot-msg">
+                            <p>Heyy</p>
+                            <img src="https://cdn-icons-png.flaticon.com/512/4944/4944377.png" alt="profile" className="userimg" />
+                        </div>
+                        <div className="user-msg">
+                            <p>Tell me a joke</p>
+                            <img src={auth.currentUser.photoURL} alt="profile" className="userimg" />
+                        </div>
+                        <div className="bot-msg">
+                            <p>How many seconds are in a year?<br />12. January 2nd, February 2nd, March 2nd, April 2nd.... etc</p>
+                            <img src="https://cdn-icons-png.flaticon.com/512/4944/4944377.png" alt="profile" className="userimg" />
+                        </div>
                     </div>
-                ))}
-                </div>
-                <div className="chatbot-body-right">
-                {userMsg.map((msg,index) => (
-                    <div className="user-msg" key={index}>
-                    <p key={index}>{msg.msg}</p>
-                    <img src={auth.currentUser.photoURL} alt="profile" className="userimg"/>
+                    <div className="chatbot-body-bottom">
+                        <input type="text" placeholder="Type a message" className="chatbot-input" id="chatbot-input" onChange={
+                            (e) => {
+                                if(e.keyCode === 13) {
+                                    sendMessage(e);
+                                }
+                                setMessage(e.target.value);
+                                console.log(message);
+                            }
+                        } />
+                        <div className="Button-Container">
+                            <GrAttachment className="chatbot-attach-btn" onClick={() => { alert("Attach") }} />
+                            <GrSend className="chatbot-send-btn" onClick={
+                                (e) => {
+                                    sendMessage(e);
+                                }
+                            } />
+                        </div>
                     </div>
-                ))}
                 </div>
-                </div>
-                <div className="chatbot-body-bottom">
-                 <input type="text" placeholder="Type a message" className="chatbot-input"/>
-                    <div className="Button-Container">
-                    <GrAttachment className="chatbot-attach-btn" onClick={() => {alert("Attach")}}/>
-                    <GrSend className="chatbot-send-btn" onClick={() => {alert("Send")}}/> 
-                    </div>  
-                </div>
-                </div>
-        </div>
+            </div>
         </div>
     )
 }
