@@ -120,21 +120,23 @@ position: relative;
     position: absolute;
     display: flex;
     flex-direction: column;
+    font-size: 1rem;
+    padding: 5px;
     top: 30px;
 }
 .bot-msg{
     background-color: aquamarine;
-    width: fit-content;
+    width: 50%;
     border-radius: 10px;
     padding: 5px;
     margin: 5px;
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: start;
 }
 .user-msg{
-    background-color: aquamarine;
-    width: fit-content;
+    background-color: rgb(155, 127, 255);
+    width: 40%;
     border-radius: 10px;
     padding: 5px;
     margin: 5px;
