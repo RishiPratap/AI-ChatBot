@@ -22,6 +22,7 @@ const configuration = new Configuration({
   };
 
 const get_text_response = async (req, res) => {
+  console.log(req.body.prompt);
   const userPrompt = req.body.prompt;
   const response = await getRes(openai, userPrompt);
   res.send(response);
