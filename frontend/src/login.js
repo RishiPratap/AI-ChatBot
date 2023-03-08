@@ -18,7 +18,7 @@ const Login = () => {
             alert("Please verify that you are not a robot");
             return;
         }
-        await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=6LdM0eQkAAAAAAtY3BDfjaLlYeU_GX0mJx-s4lLC&response=${token}`).then((res) => {
+        await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=6LdaPeUkAAAAAOhwINmyahYEm-8TEoxrmhS9q0Qq&response=${token}`).then((res) => {
             console.log(res);
             if(res.data.success === false || res.data.score < 0.5){
                 alert("Please verify that you are not a robot");
@@ -44,7 +44,7 @@ const Login = () => {
                 <button style={{"marginTop" : "200px"}} className='google-btn'
                 onClick={signin}>Sign In with Google</button>
                 <div style={{"marginTop" : "20px"}}>
-                <ReCaptcha sitekey='6LdM0eQkAAAAANZwcYgIcvO6LHEx--Y93d1YkPML' ref={captchaRef}/>
+                <ReCaptcha sitekey='6LdaPeUkAAAAANMeYfCSFQaTYCOa6z38gVAGAUe-' ref={captchaRef}/>
                 </div>
             </div>
         </div>
