@@ -215,7 +215,7 @@ position: relative;
 
 .grid-container {
     display: grid;
-    grid-template-columns: auto;
+    grid-template-columns: auto auto;
     background-color: #2196F3;
     border-radius: 20px;
     padding: 5px;
@@ -277,3 +277,36 @@ position: relative;
 input:focus{
     outline: none;
 }
+
+@media only screen and (max-width: 600px)  { 
+
+    .chatbot-body{
+        height: 30rem;
+        width:inherit;
+        background-color: antiquewhite;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: auto;
+            background-color: #2196F3;
+            border-radius: 20px;
+            padding: 5px;
+            margin: 5px;
+          }
+          .grid-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            margin: 2px;
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            font-size: 20px;
+            text-align: center;
+            cursor: pointer;
+          }
+ }
