@@ -124,9 +124,9 @@ position: relative;
     padding: 5px;
     top: 30px;
 }
+
 .bot-msg{
     background-color: aquamarine;
-    width: 50%;
     border-radius: 10px;
     padding: 5px;
     margin: 5px;
@@ -136,15 +136,24 @@ position: relative;
 }
 .user-msg{
     background-color: rgb(155, 127, 255);
-    width: 40%;
     border-radius: 10px;
     padding: 5px;
     margin: 5px;
     text-align: center;
     display: flex;
     align-items: center;
-    justify-content: end;
-    margin-left: auto;
+    justify-content:start;
+    flex-direction: row-reverse;
+}
+.user-msg p{
+    width: auto;
+    text-align: left;
+    word-break: break-word;
+}
+.bot-msg p{
+    width: auto;
+    text-align: left;
+    word-break: break-word;
 }
 .botimg{
     width: 20px;
@@ -153,7 +162,15 @@ position: relative;
     margin: 5px;
     padding: 5px;
 }
-
+.empty{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
 .userimg{
     width: 20px;
     height: 20px;
@@ -162,6 +179,19 @@ position: relative;
     padding: 5px;
 }
 
+.spinner {
+    border: 2px solid #f3f3f3; 
+    border-top: 2px solid #3498db; 
+    border-radius: 50%; 
+    width: 20px; 
+    height: 20px; 
+    animation: spin 0.8s linear infinite; 
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); } 
+    100% { transform: rotate(360deg); } 
+  }
 .chatbot-body-bottom{
     display: flex;
     align-items: center;
@@ -172,7 +202,7 @@ position: relative;
     flex-wrap: wrap;
     width: 90%;
     border: 2px solid black;
-    border-radius: 30px;
+    border-radius: 10px;
     margin-bottom: 5px;
 }
 .Button-Container{
@@ -183,14 +213,56 @@ position: relative;
     flex-wrap: wrap;
 }
 
+.grid-container {
+    display: grid;
+    grid-template-columns: auto;
+    background-color: #2196F3;
+    border-radius: 20px;
+    padding: 5px;
+    margin: 5px;
+  }
+  .grid-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    margin: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+  }
+
 .chatbot-input{
-  width: 50%;
-  height: 30px;
-  text-indent: 5px;
-  border: 0px;
-  background-color: antiquewhite;
+    resize:none;
+    overflow: auto;
+    outline: none;
+    width: 70%;
+    min-height: 50px;
+    max-height: 200px;
+    text-indent: 5px;
+    border: 0px;
+    background-color: transparent;
 }
 
+#animeplaceholder{
+    position: absolute;
+    top: 20px;
+    left: 60px;
+    display: block;
+    color: grey;
+    height: 30px;
+    width: 200px;
+    font-size: 15px;
+}
+
+.chatbot-input::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+.chatbot-input::-webkit-input-placeholder{
+    color: black;
+    font-size: 1rem;
+}
 .chatbot-attach-btn{
     margin-right: 10px;
     font-size: 25px;
@@ -198,7 +270,7 @@ position: relative;
 }
 
 .chatbot-send-btn{
-    margin-left: 10px;
+    margin-left: 5px;
     font-size: 25px;
     cursor: pointer;
 }
