@@ -12,6 +12,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
+    "react-google-recaptcha": "^2.1.0",
     "react-icons": "^4.7.1",
     "react-scripts": "5.0.1",
     "react-text-animations": "^1.1.10",
