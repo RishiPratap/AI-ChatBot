@@ -103,7 +103,7 @@ function Profile() {
                 document.getElementById("msg-box").innerHTML += `
                 <div class="bot-msg">
                 <img src="https://cdn-icons-png.flaticon.com/512/4944/4944377.png" alt="profile" class="userimg"/>
-                <p>Hi ${auth.currentUser.displayName} enter prompt to get answers...</p>
+                <p>Hi <strong>${auth.currentUser.displayName}</strong>. Enter prompt to get answers...</p>
                 </div>`;
         }
         setSample(false);
@@ -145,7 +145,7 @@ function Profile() {
                     <div className="Message-Container" id="msg-box">
                         <div className="bot-msg">
                             <img src="https://cdn-icons-png.flaticon.com/512/4944/4944377.png" alt="profile" className="userimg" />
-                            <p>Hi {auth.currentUser.displayName} enter prompt to get answers...</p>
+                            <p>Hi <strong>{auth.currentUser.displayName}</strong>. Enter prompt to get answers...</p>
                         </div>
                         {sample ? (
                             <div className="grid-container">
