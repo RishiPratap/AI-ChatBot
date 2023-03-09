@@ -32,11 +32,27 @@ const getImg = async (openai, userPrompt) => {
   return image_url;
 };
 
+const image_requested = async (prompt) => {
+  let message = prompt.toLowerCase();
+  message += ` Does the above prompt ask for an image as response? Reply with "yes" or "no" and nothing else.`;
+  const res = await getRes(openai, message);
+  return(res.toLowerCase());
+};
+
 const get_text_response = async (req, res) => {
-  console.log(req.body.prompt);
-  const userPrompt = req.body.prompt;
-  const response = await getRes(openai, userPrompt);
-  res.send(response);
+  const checkImg = await image_requested(req.body.prompt);
+  console.log("image check: " + checkImg);
+  if (checkImg.includes("yes")) {
+    console.log("image requested");
+    const userPrompt = req.body.prompt;
+    const response = await getImg(openai, userPrompt);
+    res.send(response);
+  } else {
+    console.log("text requested");
+    const userPrompt = req.body.prompt;
+    const response = await getRes(openai, userPrompt);
+    res.send(response);
+  }
 }
 
 const get_image_response = async (req, res) => {
