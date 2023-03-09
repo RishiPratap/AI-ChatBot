@@ -176,7 +176,9 @@ function Profile() {
                         <div className="Button-Container">
                             <ImBin className="chatbot-attach-btn" onClick={() => {ClearHistory()}} />
                             { spinner === true ? <div className="spinner"></div>:<GrSend className="chatbot-send-btn" onClick={
-                                (e) => {
+                                async(e) => {
+                                    await setSample(false);
+                                    console.log("sample: " + sample);
                                     sendMessage(e);
                                 }
                             } />}
