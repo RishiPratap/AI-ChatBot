@@ -39,7 +39,6 @@ function Profile() {
             "prompt": message,
         }
         await axios.post("http://localhost:3000/application/ask", msgObj).then((res) => {
-
             setSpinner(false);
             console.log(res);
             console.log(res.data);
@@ -49,6 +48,8 @@ function Profile() {
             <img src="https://cdn-icons-png.flaticon.com/512/4944/4944377.png" alt="profile" class="userimg"/>
             <img src=${res.data.image_link} alt="profile" class="resImage"/>
             </div>`;
+            var element = document.getElementById("msg-box");
+            element.scrollTop = element.scrollHeight;
             }
             else {
                 msg = res.data;
@@ -63,7 +64,7 @@ function Profile() {
                     loop: false,
                     delay: 50,
                 });
-                var element = document.getElementById("msg-box");
+                element = document.getElementById("msg-box");
                 element.scrollTop = element.scrollHeight;
             }
         }).catch((err) => {
