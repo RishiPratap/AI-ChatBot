@@ -46,7 +46,13 @@ const get_text_response = async (req, res) => {
     console.log("image requested");
     const userPrompt = req.body.prompt;
     const response = await getImg(openai, userPrompt);
-    res.send(response);
+    resObj = {
+      "image_requested": true,
+      "image_link": ""
+    }
+    resObj["image_link"] = response;
+    console.log(resObj);
+    res.send(resObj);
   } else {
     console.log("text requested");
     const userPrompt = req.body.prompt;
