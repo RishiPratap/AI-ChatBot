@@ -310,3 +310,10 @@ input:focus{
             cursor: pointer;
           }
  }
+
+ .resImage{
+ height: 200px;
+ width: 100%;
+ border-radius: 20px;
+ padding: 5px;
+ }
