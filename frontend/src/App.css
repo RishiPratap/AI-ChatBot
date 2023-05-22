@@ -280,14 +280,16 @@ input:focus{
 
 .info{
     background-color: lightcoral;
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 5px;
-    margin: 5px;
+    margin: 10px;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content:start;
     color: red;
+    font-size: 1rem;
+    font-weight: bolder;
 }
 
 @media only screen and (max-width: 600px)  { 
