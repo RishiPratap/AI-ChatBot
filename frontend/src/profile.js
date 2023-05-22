@@ -38,7 +38,7 @@ function Profile() {
         const msgObj = {
             "prompt": message,
         }
-        await axios.post("https://bot-ai-y94q.onrender.com/application/ask", msgObj).then((res) => {
+        await axios.post("http://localhost:3001/application/ask", msgObj).then((res) => {
             setSpinner(false);
             console.log(res);
             console.log(res.data);
