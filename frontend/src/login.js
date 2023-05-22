@@ -18,15 +18,11 @@ const Login = () => {
             alert("Please verify that you are not a robot");
             return;
         }
-        await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=6LdaPeUkAAAAAOhwINmyahYEm-8TEoxrmhS9q0Qq&response=${token}`).then((res) => {
-            console.log(res);
-            if(res.data.success === false || res.data.score < 0.5){
-                alert("Please verify that you are not a robot");
-                return;
-            }
-        }).catch((err) => {
-            console.log(err);
+        await axios.post(`http://localhist:3000/captcha/recaptcha`,{token}).then(res =>  console.log(res))
+        .catch((error) => {
+        console.log(error);
         })
+        
         signInWithPopup(auth, provider)
         .then((result) => {
             console.log(result);

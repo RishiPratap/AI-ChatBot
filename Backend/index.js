@@ -17,5 +17,6 @@ app.get("/", (req, res) => {
 });
 app.use("/users", require("./Routes/userRouter"));
 app.use("/application", require("./Routes/applicationRouter"));
+app.use("/captcha", require("./Routes/captcha"));
 
 app.listen(port);
