@@ -280,17 +280,17 @@ input:focus{
 
 @media only screen and (max-width: 600px)  { 
 
-    .chatbot-body{
-        height: 30rem;
-        width:inherit;
-        background-color: antiquewhite;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        }
+        .chatbot-body{
+            height: 30rem;
+            width:inherit;
+            background-color: antiquewhite;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            }
         .grid-container {
             display: grid;
             grid-template-columns: auto;
@@ -309,4 +309,15 @@ input:focus{
             text-align: center;
             cursor: pointer;
           }
+          .resImage {
+            width: 50vw;
+            border-radius: 20px;
+            padding: 5px;
+          }
+ }
+
+ .resImage{
+ width: 30vw;
+ border-radius: 20px;
+ padding: 5px;
  }
