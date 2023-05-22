@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const cors = require("cors");
 
-const port = 3000;
+const port = 3001;
 dotenv.config();
 
 var app = express();
@@ -17,6 +17,6 @@ app.get("/", (req, res) => {
 });
 app.use("/users", require("./Routes/userRouter"));
 app.use("/application", require("./Routes/applicationRouter"));
-app.use("/captcha", require("./Routes/captcha"));
+
 
 app.listen(port);

@@ -73,23 +73,6 @@ const play_akinator = async (req, res) => {
   console.log(`Let's play akinator on ${category}!`);
   res.send("Yet to work on this");
 }
-
-const recaptcha = async (req, res) => {
-    //Destructuring response token from request body
-    const {token} = req.body;
-
-//sends secret key and response token to google
-    await axios.post(
-      `https://www.google.com/recaptcha/api/siteverify?secret=6LdaPeUkAAAAAOhwINmyahYEm-8TEoxrmhS9q0Qq&response=${token}`
-      );
-
-//check response status and send back to the client-side
-      if (res.status(200)) {
-        res.send("Human");
-    }else{
-      res.send("Robot");
-    }
-}
     
 
 module.exports = {
