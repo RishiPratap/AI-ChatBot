@@ -150,6 +150,7 @@ function Profile() {
             <div className="ChatBot">
                 <div className="ChatBot-Header">
                     <h3>ChatBot</h3>
+                    <p className="info">Currently Down</p>
                 </div>
                 <div className="chatbot-body">
                     <div className="Message-Container" id="msg-box">
