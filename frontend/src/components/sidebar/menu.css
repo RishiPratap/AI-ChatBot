@@ -1,0 +1,132 @@
+.sidebar {
+  width: 250px;
+  height: 100%;
+  background-color: #414a50;
+  color: #fff;
+  padding: 20px;
+  position: fixed;
+  box-sizing: border-box;
+  margin-right: 20px;
+  left: 0px;
+  top: 0px;
+  z-index: 99999;
+  transition: all 0.5s;
+}
+.sidebar-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+.new-chat{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+}
+.new-chat:hover{
+  background-color: #555;
+  opacity: 0.8;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 5px;
+}
+.user-info{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 5px;
+  margin-bottom: -10px;
+}
+.user-info:hover{
+  background-color: #555;
+  opacity: 0.8;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 5px;
+}
+.userName{
+  font-size: 17px;
+  font-weight: bold;
+}
+.logout-btn{
+  padding: 10px;
+  width: 100%;
+  background-color: #555;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.context-menu{
+  display: none;
+  position: relative;
+  top: 5px;
+  left: 40px;
+  text-align: center;
+  width: 120px;
+  height: 50px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #555;
+}
+.context-menu:hover{
+  background-color: #555;
+  opacity: 0.8;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 5px;
+}
+.chatHistory{
+  height: 90%;
+  border: 0.5px solid white;
+  scroll-behavior: smooth;
+  border-radius: 5px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.user-prompt{
+  padding: 5px;
+  margin: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.user-prompt:hover{
+  background-color: #555;
+  opacity: 0.8;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+}
+.prompt-title{
+  font-size: 15px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.loadingCenter{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+.date-header{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  margin: 5px;
+  background-color: #555;
+  border-radius: 5px;
+  color: #fff;
+  text-align: center;
+}
