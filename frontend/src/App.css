@@ -42,15 +42,15 @@ body{
     flex-direction: column;
     align-items: center;
     flex-wrap: wrap;
-    padding: 5px;
-    margin: 10px;
 }
 .Navbar{
     display: flex;
     justify-content: space-between;
+    flex-direction: row;
     width: 100%;
     align-items: center;
     flex-wrap: wrap;
+    display: none;
 }
 .NavLeft{
    display: flex;
@@ -97,11 +97,10 @@ hr{
     align-items: center;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 10px;
     width: 100%;
 }
 .chatbot-body{
-height: 30rem;
+height: 100vh;
 width:70vw;
 background-color: antiquewhite;
 border-radius: 0.5rem;
@@ -113,7 +112,8 @@ position: relative;
 }
 .Message-Container{
     border: 2px solid black;
-    height: 350px;
+    height: 425px;
+    border-radius: 10px;
     width: 90%;
     overflow-y: auto;
     overflow-x: hidden;
@@ -126,23 +126,23 @@ position: relative;
 }
 
 .bot-msg{
-    background-color: aquamarine;
+    background-color: #8bd7d1;
     border-radius: 10px;
     padding: 5px;
     margin: 5px;
     display: flex;
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
 }
 .user-msg{
-    background-color: rgb(155, 127, 255);
+    background-color: #caedde;
     border-radius: 10px;
     padding: 5px;
     margin: 5px;
     text-align: center;
     display: flex;
     align-items: center;
-    justify-content:start;
+    justify-content:flex-end;
     flex-direction: row-reverse;
 }
 .user-msg p{
@@ -223,7 +223,7 @@ position: relative;
   }
   .grid-item {
     background-color: rgba(255, 255, 255, 0.8);
-    padding: 20px;
+    padding: 30px;
     margin: 2px;
     border: 1px solid rgba(0, 0, 0, 0.8);
     border-radius: 15px;
@@ -244,16 +244,18 @@ position: relative;
     background-color: transparent;
 }
 
-#animeplaceholder{
+#animeplaceholder {
     position: absolute;
-    top: 20px;
+    top: 22px;
     left: 20px;
     display: block;
     color: grey;
     height: 30px;
     width: 200px;
     font-size: 15px;
-}
+    font-weight: bold;
+    text-align: left;
+  }
 
 .chatbot-input::-webkit-scrollbar {
     width: 0px;
@@ -286,16 +288,52 @@ input:focus{
     text-align: center;
     display: flex;
     align-items: center;
-    justify-content:start;
+    justify-content:flex-start;
     color: red;
     font-size: 1rem;
     font-weight: bolder;
 }
 
+.explanation-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f7f7f7;
+    font-size: 16px;
+  }
+  .code-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f0f0f0;
+    white-space: pre-wrap;
+    font-family: monospace;
+  }
+  .keyword {
+    color: blue;
+    font-weight: bold;
+  }
+  .important-word {
+    color: red;
+    font-weight: bold;
+  }
+
+  .sidebar-toggle{
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    cursor: pointer;
+}
+
 @media only screen and (max-width: 600px)  { 
 
+        .Profile{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
         .chatbot-body{
-            height: 30rem;
             width:inherit;
             background-color: antiquewhite;
             border-radius: 0.5rem;
@@ -304,6 +342,14 @@ input:focus{
             justify-content: center;
             align-items: center;
             position: relative;
+            }
+            .Navbar{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                width: 100%;
+                align-items: center;
+                padding: 5px;
             }
         .grid-container {
             display: grid;
@@ -328,6 +374,29 @@ input:focus{
             border-radius: 20px;
             padding: 5px;
           }
+          pre.hljs {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: scroll; /* Enable horizontal scrolling */
+            width: 65vw;
+          }
+          
+          /* Style for the code inside the container */
+          pre.hljs code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+          }
+
+          .sidebar-toggle{
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            cursor: pointer;
+            display: none;
+        }
  }
 
  .resImage{
@@ -335,3 +404,30 @@ input:focus{
  border-radius: 20px;
  padding: 5px;
  }
+ 
+ /* Style for the container of highlighted code */
+pre.hljs {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    overflow: scroll; /* Enable horizontal scrolling */
+    width: 50vw;
+  }
+  
+  /* Style for the code inside the container */
+  pre.hljs code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+.setCenter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+}

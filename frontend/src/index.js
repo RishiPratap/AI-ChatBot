@@ -2,12 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
+import ChatHistory from './ChatHistory';
+import FallbackPage from './fallback';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+  <Router>
+  <Routes>
+  <Route path="/" element={<App />} />
+  <Route path="/chat/:id/:msg_id" element={<ChatHistory />} />
+  {/* Add fallback page only html */}
+  <Route path="*" element={<FallbackPage/>} />
+  </Routes>
+  </Router>
   </React.StrictMode>
 );
 
