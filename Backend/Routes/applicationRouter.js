@@ -3,8 +3,8 @@ const applicationController = require("../Controllers/applicationController");
 
 const router = express.Router();
 
-router.post("/ask", applicationController.get_text_response);
-router.post("/image", applicationController.get_image_response);
-router.post("/play", applicationController.play_akinator);
+router.post("/ask", applicationController.getTextResponse);
+router.post("/image", applicationController.playAkinator);
+// router.post("/play", applicationController.getImageResponse);
 
 module.exports = router;
