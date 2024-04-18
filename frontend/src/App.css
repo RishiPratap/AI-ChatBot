@@ -112,7 +112,7 @@ position: relative;
 }
 .Message-Container{
     border: 2px solid black;
-    height: 425px;
+    height: 78vh;
     border-radius: 10px;
     width: 90%;
     overflow-y: auto;
@@ -351,6 +351,19 @@ input:focus{
                 align-items: center;
                 padding: 5px;
             }
+            .Message-Container{
+                border: 2px solid black;
+                border-radius: 10px;
+                width: 90%;
+                overflow-y: auto;
+                overflow-x: hidden;
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+                font-size: 1rem;
+                padding: 5px;
+                top: 40px;
+            }            
         .grid-container {
             display: grid;
             grid-template-columns: auto;
