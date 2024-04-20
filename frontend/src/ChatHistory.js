@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { db } from './firebase';
 import { useParams } from 'react-router-dom';
-import { doc, collection, getDocs } from 'firebase/firestore';
+import { doc, collection, getDocs, getDoc } from 'firebase/firestore';
 import markdownit from 'markdown-it';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/default.css';
@@ -48,11 +48,16 @@ const ChatHistory = () => {
 
   const [chatData, setChatData] = useState(null);
   const [Loading, setLoading] = useState(true);
+  const [userImageUrl, setUserImageUrl] = useState(null);
 
   useEffect(() => {
     const fetchChatData = async () => {
       try {
         const userDocRef = doc(db, 'users', id);
+        const userInfo = (await getDoc(userDocRef)).data();
+        console.log('User Info:', userInfo);
+        setUserImageUrl(userInfo.image_url);
+        console.log('User Image URL:', userImageUrl);
         const chatHistoryCollectionRef = collection(userDocRef, 'chatHistory');
         const querySnapshot = await getDocs(chatHistoryCollectionRef);
         querySnapshot.forEach(doc => {
@@ -74,7 +79,7 @@ const ChatHistory = () => {
       }
     };
     fetchChatData();
-  }, [id, msg_id]); // Dependency array with id and msg_id
+  }, [id, msg_id,userImageUrl]); // Dependency array with id and msg_id
 
   return (
     <div className="chat-history">
@@ -87,7 +92,9 @@ const ChatHistory = () => {
                 <>
                   <div className="user-msg">
                     <p>{chatData.messages[0].user_prompt}</p>
+                    {userImageUrl != null ? <img src={userImageUrl} alt="profile" className="userimg" /> :
                     <img src="https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png" alt="profile" className="userimg" />
+                    }
                   </div>
                   <div className="bot-msg">
                     <img src="https://cdn-icons-png.flaticon.com/512/4944/4944377.png" alt="profile" className="userimg" />

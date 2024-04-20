@@ -1,5 +1,5 @@
 import { auth,db } from "./firebase";
-import { collection, getDoc, doc, setDoc } from 'firebase/firestore';
+import { collection, getDoc, doc, setDoc, updateDoc,onSnapshot } from 'firebase/firestore';
 import { GrSend } from 'react-icons/gr';
 import { ImBin } from 'react-icons/im';
 import { useState } from 'react';
@@ -38,6 +38,7 @@ function Profile() {
     const [spinner, setSpinner] = useState(false);
     const [sample, setSample] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
+    const [checkCredits, setCheckCredits] = useState(null);
 
     const closeSidebar = () => {
         setIsOpen(!isOpen);
@@ -61,6 +62,24 @@ function Profile() {
     }
 
     useEffect(() => {
+        const changeInCredit  = onSnapshot(doc(db, 'users', auth.currentUser.uid), (doc) => {
+            const data = doc.data();
+            setCheckCredits(data.credits);
+        });
+        console.log("Updated Credits: ", changeInCredit);
+        const checkUserCredits = async () => {
+            try {
+                const userId = auth.currentUser.uid;
+                const userDocRef = doc(db, 'users', userId);
+                const userInfo = (await getDoc(userDocRef)).data();
+                console.log('User Info:', userInfo);
+                setCheckCredits(userInfo.credits); // Set user credits in state
+                console.log('User credits left:', checkCredits);
+            } catch (error) {
+                console.error('Error fetching user credits:', error);
+            }
+        };
+        checkUserCredits();
         hljs.highlightAll();
         const placeholdertext = document.getElementById("animeplaceholder") && document.getElementById("input-chat") && document.getElementById("chating");
         placeholdertext.addEventListener("click", RemovePlaceholder);
@@ -69,7 +88,7 @@ function Profile() {
             // clean up function to remove the event listener
             placeholdertext.removeEventListener("click", RemovePlaceholder);
         };
-    }, []);
+    }, [checkCredits]);
 
     const sendApiRequest = async (message, count) => {
         const msgObj = {
@@ -92,6 +111,7 @@ function Profile() {
 
                 try {
                     await writeUserData(message, msg, msg_id);
+                    await userUpdateCredits();
                 } catch (error) {
                     console.error("Error invoking writeUserData: ", error);
                 }
@@ -107,6 +127,31 @@ function Profile() {
             setSpinner(false);
         })
     }
+
+    const userUpdateCredits = async () => {
+        try {
+            if (!auth.currentUser) {
+                console.error("User is not authenticated.");
+                return;
+            }
+
+            if (!db) {
+                console.error("Firestore is not initialized.");
+                return;
+            }
+
+            const user = auth.currentUser;
+            const userRef = doc(db, 'users', user.uid);
+            const userInfo = (await getDoc(userRef)).data();
+            console.log("User info: ", userInfo);
+            const updatedCredits = checkCredits - 1;
+            await updateDoc(userRef, {credits: updatedCredits});
+            setCheckCredits(updatedCredits);
+            console.log("User credits updated successfully.");
+        } catch (error) {
+            console.error("Error updating user credits: ", error);
+        }
+    };
 
     const writeUserData = async (message, msg, msg_id) => {
         try {
@@ -136,6 +181,12 @@ function Profile() {
                     uid: user.uid,
                     displayName: user.displayName,
                     email: user.email,
+                    image_url: user.photoURL,
+                    credits: 3,
+                    upgaded: false,
+                    payment_status: false,
+                    Razorpay_Order_Id: "",
+                    Payment_Id: "",
                     createdTimestamp: new Date()
                 });
     
@@ -176,6 +227,66 @@ function Profile() {
         }
     };
 
+    const handlePayment = async () => {
+        try {   
+            const response = await axios.post("http://localhost:3001/application/upgrade");
+            console.log(response);
+            const options = {
+                key: response.data.data.key_id,
+                amount: response.data.data.amount,
+                currency: response.data.data.currency,
+                name: "ChatBot",
+                description: "Upgrade to premium",
+                image: "https://cdn-icons-png.flaticon.com/512/4944/4944377.png",
+                order_id: response.data.data.id,
+                
+                handler: async function (response) {
+                    try {
+                        const data = {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        };
+                        const verifyResponse = await axios.post("http://localhost:3001/application/verify", data);
+                        console.log(verifyResponse);
+                        if (verifyResponse.data.success) {
+                            const user = auth.currentUser;
+                            const userRef = doc(db, 'users', user.uid);
+                            await updateDoc(userRef, {upgaded: true, payment_status: true, Razorpay_Order_Id: response.razorpay_order_id, Payment_Id: response.razorpay_payment_id});
+                            console.log("User upgraded successfully.");
+                            Toast.fire({
+                                icon: "success",
+                                title: "Upgrade successful"
+                                });
+                        }
+                    } catch (error) {
+                        console.error("Error verifying payment: ", error);
+                        Toast.fire({
+                            icon: "error",
+                            title: "Upgrade failed"
+                            });
+                    }
+                },
+                prefill: {
+                    name: auth.currentUser.displayName,
+                    email: auth.currentUser.email,
+                    contact: auth.currentUser.phoneNumber,
+                },
+                theme: {
+                    color: "#3399cc",
+                },
+            };
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+        } catch (error) {
+            console.error("Error upgrading user: ", error);
+            Toast.fire({
+                icon: "error",
+                title: "Upgrade failed"
+                });
+        }
+    };
+
     function generateRandomString(length, characterSet) {
         let result = '';
         for (let i = 0; i < length; i++) {
@@ -186,6 +297,14 @@ function Profile() {
     }
 
     const sendMessage = async (e) => {
+        if(checkCredits === 0){
+            Toast.fire({
+                icon: "warning",
+                title: "You have exhausted your credits"
+                });
+            setSpinner(false);
+            return;
+        }
         setSpinner(true);
         e.preventDefault();
         console.log(message);
@@ -270,7 +389,7 @@ function Profile() {
             <h2 >ChatBot</h2>
             </div>
             <div className="sidebar-toggle" onClick={() => setIsOpen(!isOpen)} ><MdDoubleArrow/></div>
-            {isOpen ? <Sidebar className="sidebar" openChat={openChat} ClearHistory={ClearHistory} closeSidebar={closeSidebar}/> : <div></div>}
+            {isOpen ? <Sidebar className="sidebar" handlePayment={handlePayment} checkCredits={checkCredits} openChat={openChat} ClearHistory={ClearHistory} closeSidebar={closeSidebar}/> : <div></div>}
             <div className="ChatBot">
                 <div className="chatbot-body">
                     <div className="Message-Container" id="msg-box">
@@ -318,6 +437,13 @@ function Profile() {
                                         Toast.fire({
                                             icon: "warning",
                                             title: "Please enter a prompt"
+                                          });
+                                          return;
+                                    }
+                                    if(checkCredits === 0){
+                                        Toast.fire({
+                                            icon: "warning",
+                                            title: "You have exhausted your credits"
                                           });
                                           return;
                                     }

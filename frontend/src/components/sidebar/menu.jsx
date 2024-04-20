@@ -1,29 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { auth, db } from "../../firebase";
-import { collection, getDocs, doc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { MdDoubleArrow } from 'react-icons/md';
 import { MdChat } from "react-icons/md";
 import './menu.css'; // Importing CSS file for styling
 import { MdContentCopy } from "react-icons/md";
 import { MdDoneAll } from "react-icons/md";
 import { useLocation } from 'react-router-dom';
+import { BsCashCoin } from "react-icons/bs";
+import { SlBadge } from "react-icons/sl";
+import { MdLogout } from "react-icons/md";
 import Swal from 'sweetalert2';
 
-const Sidebar = ({ closeSidebar, openChat, ClearHistory }) => {
+const Sidebar = ({ closeSidebar, openChat, ClearHistory, checkCredits, handlePayment }) => {
   const [chatHistory, setChatHistory] = useState([]);
   const [userId, setUserId] = useState('');
   const [clickedStates, setClickedStates] = useState([]);
+  const [credits, setCredits] = useState(0); // State to store user credits
+  const [userUpgraded, setUserUpgraded] = useState(false); // State to store user upgrade status
   const location = useLocation();
 
   // Extracting the current URL from location object
   const currentURL = location.pathname;
 
   useEffect(() => {
+    onSnapshot(doc(db, 'users', auth.currentUser.uid), (doc) => {
+      const userInfo = doc.data();
+      setUserUpgraded(userInfo.upgaded);
+    });
     const fetchChatHistory = async () => {
       try {
         const userId = auth.currentUser.uid;
         setUserId(userId);
         const userDocRef = doc(db, 'users', userId);
+        const userInfo = (await getDoc(userDocRef)).data();
+        console.log('User Info:', userInfo);
+        setCredits(userInfo.credits); // Set user credits in state
+        console.log('User credits left:', credits);
         const chatHistoryCollectionRef = collection(userDocRef, 'chatHistory');
 
         const querySnapshot = await getDocs(chatHistoryCollectionRef);
@@ -66,7 +79,7 @@ const Sidebar = ({ closeSidebar, openChat, ClearHistory }) => {
     };
 
     fetchChatHistory(); // Fetch chat history when the sidebar mounts
-  }, []);
+  }, [credits]);
 
   const Toast = Swal.mixin({
     toast: true,
@@ -86,10 +99,10 @@ const Sidebar = ({ closeSidebar, openChat, ClearHistory }) => {
 
   const contextMenu = () => {
     const contextMenu = document.querySelector('.context-menu');
-    if (contextMenu.style.display === 'block') {
+    if (contextMenu.style.display === 'flex') {
       contextMenu.style.display = 'none';
     } else {
-      contextMenu.style.display = 'block';
+      contextMenu.style.display = 'flex';
     }
   };
 
@@ -173,7 +186,24 @@ const Sidebar = ({ closeSidebar, openChat, ClearHistory }) => {
           )}
         </div>
         <div className='context-menu'>
-          <p onClick={logout}>Logout</p>
+        <div className='menu-item'><BsCashCoin style={{
+          color: 'black',
+          marginRight: '5px'
+        }} />
+        Credits Remaining{"  "}{checkCredits}</div>
+        {userUpgraded ?<div className='menu-items'><SlBadge style={{
+          color: 'black',
+          marginRight: '5px'
+        }}/>Upgraded to PRO</div>:<div className='menu-item' onClick={handlePayment}><SlBadge style={{
+          color: 'black',
+          marginRight: '5px'
+        }}/>Upgrade</div>}
+        <div className='menu-item' onClick={logout}><MdLogout
+          style={{
+            color: 'black',
+            marginRight: '5px'
+          }}
+        />Logout</div>
         </div>
         <div className="user-info" onClick={contextMenu}>
           {auth.currentUser.photoURL == null ? (
