@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { auth, db } from "../../firebase";
-import { collection, getDocs, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, onSnapshot,deleteDoc } from 'firebase/firestore';
 import { MdDoubleArrow } from 'react-icons/md';
 import { MdChat } from "react-icons/md";
 import './menu.css'; // Importing CSS file for styling
@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 import { BsCashCoin } from "react-icons/bs";
 import { SlBadge } from "react-icons/sl";
 import { MdLogout } from "react-icons/md";
+import { MdOutlineSettings } from "react-icons/md";
 import Swal from 'sweetalert2';
 
 const Sidebar = ({ closeSidebar, openChat, ClearHistory, checkCredits, handlePayment }) => {
@@ -106,6 +107,59 @@ const Sidebar = ({ closeSidebar, openChat, ClearHistory, checkCredits, handlePay
     }
   };
 
+  // Function to delete a collection and all its documents
+async function deleteCollection(collectionPath) {
+  const query = collection(db, collectionPath);
+  const querySnapshot = await getDocs(query);
+
+  querySnapshot.forEach((doc) => {
+    deleteDoc(doc.ref);
+  });
+}
+
+    const openSettings = () => {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: true
+      });
+      swalWithBootstrapButtons.fire({
+        title: "Delete User Account?",
+        text: "You won't be able to revert this action!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: false,
+        allowOutsideClick: false
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const deleteAccount = async () => {
+            await deleteCollection(`users/${auth.currentUser.uid}/chatHistory`);
+            await deleteDoc(doc(db, 'users', auth.currentUser.uid));
+            Swal.fire({
+              title: "Deleted! Your account has been deleted.",
+              icon: "success",
+              showConfirmButton: false, 
+            });
+            logout();
+            window.location.reload();
+          };
+          deleteAccount();
+        } else if (
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire({
+            title: "Cancelled",
+            text: "Your account is safe :)",
+            icon: "info"
+          });
+        }
+      });
+    };
+
   const copyToClipboard = (chat, index, userId) => {
     // Create a copy of clickedStates array
     const updatedClickedStates = [...clickedStates];
@@ -198,6 +252,12 @@ const Sidebar = ({ closeSidebar, openChat, ClearHistory, checkCredits, handlePay
           color: 'black',
           marginRight: '5px'
         }}/>Upgrade</div>}
+        <div className='menu-item' onClick={() => openSettings()}>
+        <MdOutlineSettings style={{
+          color: 'black',
+          marginRight: '5px'
+        }}/>
+        Settings</div>
         <div className='menu-item' onClick={logout}><MdLogout
           style={{
             color: 'black',

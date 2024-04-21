@@ -34,6 +34,9 @@ const md = markdownit({
   });  
 
 function Profile() {
+    if(!auth.currentUser){
+        window.location.href = "/";
+    }
     const [message, setMessage] = useState("");
     const [spinner, setSpinner] = useState(false);
     const [sample, setSample] = useState(true);
@@ -62,33 +65,54 @@ function Profile() {
     }
 
     useEffect(() => {
-        const changeInCredit  = onSnapshot(doc(db, 'users', auth.currentUser.uid), (doc) => {
+        const changeInCredit = onSnapshot(doc(db, 'users', auth.currentUser.uid), (doc) => {
             const data = doc.data();
-            setCheckCredits(data.credits);
+            if (data && data.credits) {
+                setCheckCredits(data.credits);
+            } else {
+                console.log('Credits data not found');
+            }
         });
+    
         console.log("Updated Credits: ", changeInCredit);
+    
         const checkUserCredits = async () => {
             try {
                 const userId = auth.currentUser.uid;
                 const userDocRef = doc(db, 'users', userId);
-                const userInfo = (await getDoc(userDocRef)).data();
-                console.log('User Info:', userInfo);
-                setCheckCredits(userInfo.credits); // Set user credits in state
-                console.log('User credits left:', checkCredits);
+                const userInfo = await getDoc(userDocRef);
+    
+                if (userInfo.exists()) {
+                    const userData = userInfo.data();
+                    if (userData && userData.credits) {
+                        setCheckCredits(userData.credits);
+                        console.log('User credits left:', userData.credits);
+                    } else {
+                        console.log('User credits field not found');
+                    }
+                } else {
+                    console.log('User document does not exist');
+                }
             } catch (error) {
                 console.error('Error fetching user credits:', error);
             }
         };
+    
         checkUserCredits();
         hljs.highlightAll();
+    
         const placeholdertext = document.getElementById("animeplaceholder") && document.getElementById("input-chat") && document.getElementById("chating");
-        placeholdertext.addEventListener("click", RemovePlaceholder);
-
-        return () => {
-            // clean up function to remove the event listener
-            placeholdertext.removeEventListener("click", RemovePlaceholder);
-        };
-    }, [checkCredits]);
+        if (placeholdertext) {
+            placeholdertext.addEventListener("click", RemovePlaceholder);
+    
+            return () => {
+                // clean up function to remove the event listener
+                placeholdertext.removeEventListener("click", RemovePlaceholder);
+            };
+        } else {
+            console.warn('Elements for event listener not found');
+        }
+    }, []);    
 
     const sendApiRequest = async (message, count) => {
         const msgObj = {
