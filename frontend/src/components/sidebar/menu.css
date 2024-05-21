@@ -62,17 +62,32 @@
 }
 .context-menu{
   display: none;
+  height: 200px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid white;
+}
+.setting-menu{
+  width: 100%;
+  display: none;
+  text-align: center;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   position: relative;
   top: 5px;
   left: 0px;
+}
+.context-menuitems{
+  width: 100%;
+  display: flex;
   text-align: center;
-  height: 200px;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #555;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: normal;
+  position: relative;
+  top: 5px;
+  left: 0px;
 }
 .chatHistory{
   height: 90%;
@@ -136,7 +151,6 @@
 }
 .menu-items{
   padding: 5px;
-  width: 90%;
   font-weight: bolder;
   text-align: center;
   display: flex;

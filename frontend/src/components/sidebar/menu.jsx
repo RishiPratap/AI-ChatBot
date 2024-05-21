@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { auth, db } from "../../firebase";
-import { collection, getDocs, doc, getDoc, onSnapshot,deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, onSnapshot,deleteDoc,setDoc } from 'firebase/firestore';
 import { MdDoubleArrow } from 'react-icons/md';
 import { MdChat } from "react-icons/md";
 import './menu.css'; // Importing CSS file for styling
@@ -11,6 +11,11 @@ import { BsCashCoin } from "react-icons/bs";
 import { SlBadge } from "react-icons/sl";
 import { MdLogout } from "react-icons/md";
 import { MdOutlineSettings } from "react-icons/md";
+import { MdDarkMode } from "react-icons/md";
+import { MdSunny } from "react-icons/md";
+import { GoBell } from "react-icons/go";
+import { FaLanguage } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import Swal from 'sweetalert2';
 
 const Sidebar = ({ closeSidebar, openChat, ClearHistory, checkCredits, handlePayment }) => {
@@ -19,6 +24,7 @@ const Sidebar = ({ closeSidebar, openChat, ClearHistory, checkCredits, handlePay
   const [clickedStates, setClickedStates] = useState([]);
   const [credits, setCredits] = useState(0); // State to store user credits
   const [userUpgraded, setUserUpgraded] = useState(false); // State to store user upgrade status
+  const [isDarkMode, setDarkMode] = useState(false);
   const location = useLocation();
 
   // Extracting the current URL from location object
@@ -39,10 +45,37 @@ const Sidebar = ({ closeSidebar, openChat, ClearHistory, checkCredits, handlePay
         setCredits(userInfo.credits); // Set user credits in state
         console.log('User credits left:', credits);
         const chatHistoryCollectionRef = collection(userDocRef, 'chatHistory');
-
         const querySnapshot = await getDocs(chatHistoryCollectionRef);
         const mergedHistory = []; // Array to store merged date and chat data
 
+        if(querySnapshot.empty) {
+          console.log('No chat history found!');
+          // Backup Chat History
+          const backupChatHistoryRef = doc(db,'sampleChat', 'w53HqOYmGW77bTs8hztI');
+          const backChatAccess = collection(backupChatHistoryRef, 'chatHistory');
+          const backChatSnapshot = await getDocs(backChatAccess);
+          backChatSnapshot.forEach((doc) => {
+            const data = doc.data();
+            const date = doc.id;
+            mergedHistory.push({ date, data });
+          });
+          console.log('Backup chat history:', mergedHistory);
+          mergedHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+          const sortedHistory = []; // Array to store sorted chat history
+          mergedHistory.forEach(item => {
+            const date = item.date;
+            const data = item.data;
+            Object.entries(data).forEach(([msg_id, msgData]) => {
+              msgData.messages.forEach(message => {
+                sortedHistory.push({ date, id: msg_id, ...message });
+              });
+            });
+          });
+          sortedHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+          console.log('Sorted chat history:', sortedHistory);
+          setChatHistory(sortedHistory);
+        }
+        else {
         querySnapshot.forEach(doc => {
           const dateAtwhichChatWasCreated = doc.id;
           const chatData = doc.data();
@@ -74,6 +107,7 @@ const Sidebar = ({ closeSidebar, openChat, ClearHistory, checkCredits, handlePay
 
         console.log('Sorted chat history:', sortedHistory);
         setChatHistory(sortedHistory);
+      }
       } catch (error) {
         console.error('Error fetching chat history:', error);
       }
@@ -107,6 +141,16 @@ const Sidebar = ({ closeSidebar, openChat, ClearHistory, checkCredits, handlePay
     }
   };
 
+// Function to backup user data before deleting the account
+async function backupUserData() {
+  const user = auth.currentUser;
+  const userRef = doc(db, 'users', user.uid);
+  const bacupRef = doc(db, 'backupData', user.uid);
+  const userInfo = (await getDoc(userRef)).data();
+  console.log('User Info:', userInfo);
+  await setDoc(bacupRef, userInfo);
+}
+
   // Function to delete a collection and all its documents
 async function deleteCollection(collectionPath) {
   const query = collection(db, collectionPath);
@@ -116,8 +160,14 @@ async function deleteCollection(collectionPath) {
     deleteDoc(doc.ref);
   });
 }
+    const closeMenu = () => {
+      const contextMenu = document.querySelector('.context-menuitems');
+      const settingMenu = document.querySelector('.setting-menu');
+      settingMenu.style.display = 'none';
+      contextMenu.style.display = 'flex';
+    };
 
-    const openSettings = () => {
+    const deleteAccount = async () => {
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success",
@@ -137,6 +187,7 @@ async function deleteCollection(collectionPath) {
       }).then((result) => {
         if (result.isConfirmed) {
           const deleteAccount = async () => {
+            backupUserData();
             await deleteCollection(`users/${auth.currentUser.uid}/chatHistory`);
             await deleteDoc(doc(db, 'users', auth.currentUser.uid));
             Swal.fire({
@@ -148,9 +199,7 @@ async function deleteCollection(collectionPath) {
             window.location.reload();
           };
           deleteAccount();
-        } else if (
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire({
             title: "Cancelled",
             text: "Your account is safe :)",
@@ -158,6 +207,23 @@ async function deleteCollection(collectionPath) {
           });
         }
       });
+    }
+
+    const toggleDarkMode = () => {
+      if(isDarkMode) {
+        document.body.classList.remove('dark-mode');
+        setDarkMode(false);
+      } else {
+        document.body.classList.add('dark-mode');
+        setDarkMode(true);
+      }
+    };
+
+    const openSettings = () => {
+    const settingMenu = document.querySelector('.setting-menu');
+    const contextMenu = document.querySelector('.context-menuitems');
+    settingMenu.style.display = 'flex';
+    contextMenu.style.display = 'none';
     };
 
   const copyToClipboard = (chat, index, userId) => {
@@ -240,6 +306,43 @@ async function deleteCollection(collectionPath) {
           )}
         </div>
         <div className='context-menu'>
+        <div className='setting-menu'>
+        <div className='menu-item' onClick={() => closeMenu()}> <MdDoubleArrow
+            style={{
+              transform: 'rotate(180deg)',
+              color: 'black',
+              cursor: 'pointer',
+            }}
+          /></div> 
+        <div className='menu-item' onClick={() => toggleDarkMode()}>{
+          isDarkMode ? <MdSunny style={{
+            color: 'black',
+            marginRight: '5px'
+          }} /> : <MdDarkMode style={{
+            color: 'black',
+            marginRight: '5px'
+          }} />
+        }Dark Mode</div>
+        <div className='menu-item'><GoBell 
+          style={{
+            color: 'black',
+            marginRight: '5px'
+          }}
+        /> Alerts</div>
+        <div className='menu-item'><FaLanguage 
+          style={{
+            color: 'black',
+            marginRight: '5px'
+          }}
+        /> Language</div>
+        <div className='menu-item' onClick={() => deleteAccount()}><MdDelete 
+          style={{
+            color: 'black',
+            marginRight: '5px'
+          }}
+        /> Delete Account</div> 
+        </div>
+        <div className='context-menuitems'>
         <div className='menu-item'><BsCashCoin style={{
           color: 'black',
           marginRight: '5px'
@@ -264,6 +367,7 @@ async function deleteCollection(collectionPath) {
             marginRight: '5px'
           }}
         />Logout</div>
+        </div>
         </div>
         <div className="user-info" onClick={contextMenu}>
           {auth.currentUser.photoURL == null ? (

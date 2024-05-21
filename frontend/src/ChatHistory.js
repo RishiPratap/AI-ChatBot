@@ -60,6 +60,25 @@ const ChatHistory = () => {
         console.log('User Image URL:', userImageUrl);
         const chatHistoryCollectionRef = collection(userDocRef, 'chatHistory');
         const querySnapshot = await getDocs(chatHistoryCollectionRef);
+        if(querySnapshot.empty) {
+          const backupChatHistoryRef = doc(db,'sampleChat', 'w53HqOYmGW77bTs8hztI');
+          const backChatAccess = collection(backupChatHistoryRef, 'chatHistory');
+          const backChatSnapshot = await getDocs(backChatAccess);
+          backChatSnapshot.forEach(doc => {
+            const chatData = doc.data();
+            const messageId = msg_id; // Message ID you want to access
+            const messageData = chatData[messageId];
+            console.log('Message Data:', messageData);
+            if (messageData) {
+              setChatData(messageData);
+              setLoading(false);
+              console.log('Message found with ID:', messageId);
+            } else {
+              console.log('Message not found with ID:', messageId);
+            }
+          });
+        }
+        else{
         querySnapshot.forEach(doc => {
           const chatData = doc.data();
           const messageId = msg_id; // Message ID you want to access
@@ -73,7 +92,7 @@ const ChatHistory = () => {
             console.log('Message not found with ID:', messageId);
           }
         });
-
+      }
       } catch (error) {
         console.error('Error fetching chat data:', error);
       }

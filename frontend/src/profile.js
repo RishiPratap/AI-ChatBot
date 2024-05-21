@@ -41,7 +41,7 @@ function Profile() {
     const [spinner, setSpinner] = useState(false);
     const [sample, setSample] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
-    const [checkCredits, setCheckCredits] = useState(null);
+    const [checkCredits, setCheckCredits] = useState(0);
 
     const closeSidebar = () => {
         setIsOpen(!isOpen);
@@ -201,18 +201,18 @@ function Profile() {
     
             if (!userInfo) {
                 // User is new, create user info and chat history collection
-                await setDoc(userRef, {
-                    uid: user.uid,
-                    displayName: user.displayName,
-                    email: user.email,
-                    image_url: user.photoURL,
-                    credits: 3,
-                    upgaded: false,
-                    payment_status: false,
-                    Razorpay_Order_Id: "",
-                    Payment_Id: "",
-                    createdTimestamp: new Date()
-                });
+                // await setDoc(userRef, {
+                //     uid: user.uid,
+                //     displayName: user.displayName,
+                //     email: user.email,
+                //     image_url: user.photoURL,
+                //     credits: 3,
+                //     upgaded: false,
+                //     payment_status: false,
+                //     Razorpay_Order_Id: "",
+                //     Payment_Id: "",
+                //     createdTimestamp: new Date()
+                // });
     
                 data = {
                     [msg_id]: {
@@ -278,6 +278,9 @@ function Profile() {
                             const userRef = doc(db, 'users', user.uid);
                             await updateDoc(userRef, {upgaded: true, payment_status: true, Razorpay_Order_Id: response.razorpay_order_id, Payment_Id: response.razorpay_payment_id});
                             console.log("User upgraded successfully.");
+                            let credits = checkCredits + 50;
+                            await updateDoc(userRef, {credits: credits});
+                            setCheckCredits(credits);
                             Toast.fire({
                                 icon: "success",
                                 title: "Upgrade successful"
@@ -321,7 +324,7 @@ function Profile() {
     }
 
     const sendMessage = async (e) => {
-        if(checkCredits === 0){
+        if(checkCredits === 0 || checkCredits < 0){
             Toast.fire({
                 icon: "warning",
                 title: "You have exhausted your credits"

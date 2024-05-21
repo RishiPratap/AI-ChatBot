@@ -8,6 +8,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.dark-mode {
+  background-color: #414a50;
+  color: #fff;
+}
+
 /* custom scrollbar */
 ::-webkit-scrollbar {
   width: 20px;

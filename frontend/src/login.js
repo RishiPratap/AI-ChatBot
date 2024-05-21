@@ -33,7 +33,7 @@ const Login = () => {
                             displayName: user.displayName,
                             email: user.email,
                             image_url: user.photoURL,
-                            credits: 3,
+                            credits: 0,
                             upgaded: false,
                             payment_status: false,
                             Razorpay_Order_Id: "",
